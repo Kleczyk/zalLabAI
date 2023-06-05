@@ -58,7 +58,7 @@ w1_t_1, b1_t_1, w2_t_1, b2_t_1, w3_t_1, b3_t_1 = w1, b1, w2, b2,w3, b3
 SSE = 0
 lr_vec = list()
 
-
+fig = plt.figure()
 figa = plt.figure()
 figb = plt.figure()
 figc = plt.figure()
@@ -126,41 +126,35 @@ for epoch in range(1, max_epoch+1):
         break 
     if (epoch % disp_freq) == 0:
             print("Epoch: %5d | SSE: %5.5e " % (epoch, SSE))
-            plt.clf()
-
-            plt.plot(SSE_vec)
-            plt.ylabel('SSE')
-            plt.yscale('linear')
-            plt.title('epoch')
-            plt.grid(True)
             
             
-             
+            fig.clf()
+            figa.clf()
+            figb.clf()
+            figc.clf()
 
+
+            lx = fig.add_subplot(111)
+            lx.plot(SSE_vec)
+            lx.set_ylabel('SSE')
+            lx.set_yscale('linear')
+            lx.set_title('epoch')
+            lx.grid(True)
+            
             X1, X2 = np.meshgrid(x1, x2)
             E = np.reshape(e, X1.shape)
-            
             ax = figa.add_subplot(111, projection='3d')
             ax.plot_surface(X1, X2, E, cmap='viridis')
             ax.set_xlabel('x1')
             ax.set_ylabel('x2')
             ax.set_zlabel('e')
-            
-            #Odrysowanie wykresu
-
             X1, X2 = np.meshgrid(x1, x2)
             Y3 = np.reshape(y3, X1.shape)
-            plt.pause(0.001)
-            plt.draw_all()
-            
-            
             bx = figb.add_subplot(111, projection='3d')
             bx.plot_surface(X1, X2, Y3, cmap='viridis')
             bx.set_xlabel('x1')
             bx.set_ylabel('x2')
             bx.set_zlabel('y3')
-             # Odrysowanie wykresu
-
             X1, X2 = np.meshgrid(x1, x2)
             Y_T = np.reshape(y_t, X1.shape)
            
@@ -182,6 +176,8 @@ for epoch in range(1, max_epoch+1):
         
 print("Epoch: %5d | SSE: %5.5e " % (epoch, SSE))
 hkl.dump([SSE_vec], 'SSE2w_adapt.hkl')
+while 1:
+    pass
             
             
 
