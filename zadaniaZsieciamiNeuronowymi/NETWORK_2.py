@@ -2,19 +2,23 @@ import hickle as hkl
 import numpy as np
 import nnet as net
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
 
 def y_value(x1, x2):
     if np.abs(x1) >= 0.1 and np.abs(x2) >= 0.1:
         return np.sin(np.pi * x1 * x2)/(x1**2 + x2**2)
-    if np.abs(x1) < 0.1:
+    elif np.abs(x1) < 0.1:
         return np.sin(np.pi * 0.1 * x2)/(0.1 ** 2 + x2**2)
-    if np.abs(x2) < 0.1:
+    elif np.abs(x2) < 0.1:
         return np.sin(np.pi * 0.1 * x1)/(0.1 ** 2 + x1**2)
 
-x1 = np.arange(-1, 1, 0.21)
-x2 = np.arange(-1, 1, 0.21)
-print(x2)
-print(x1)
+
+
+
+x1 = np.arange(-1, 1.01, 0.21)
+x2 = np.arange(-1, 1.01, 0.21)
+
 
 x = np.zeros([2, len(x1) * len(x2)])
 y_t = np.zeros([1,len(x1)* len(x2)])
@@ -30,20 +34,19 @@ for i in range(0,len(x1)):
 
 
 
-
 x 
 y_t
-max_epoch =  10000
+max_epoch =  2000
 err_goal = 1e-10 
-disp_freq = 500 
-lr = 0.01 
+disp_freq = 100 
+lr = 0.001 
 mc = 0.95
 ksi_inc = 1.05
 ksi_dec = 0.7
 er = 1.04
 L = 2
-K1 = 4
-K2 = 3
+K1 = 40
+K2 = 20
 K3 = 1
 SSE_vec = [] 
 w1, b1 = net.nwtan(K1, L)  
@@ -55,6 +58,11 @@ w1_t_1, b1_t_1, w2_t_1, b2_t_1, w3_t_1, b3_t_1 = w1, b1, w2, b2,w3, b3
 SSE = 0
 lr_vec = list()
 
+
+figa = plt.figure()
+figb = plt.figure()
+figc = plt.figure()
+
 for epoch in range(1, max_epoch+1): 
     y1 = net.tansig( np.dot(w1, x),  b1) 
     y2 = net.tansig( np.dot(w2, y1),  b2) 
@@ -65,6 +73,7 @@ for epoch in range(1, max_epoch+1):
     
     SSE_t_1 = SSE
     SSE = net.sumsqr(e) 
+    
     #adaptacyjne
     if np.isnan(SSE): 
         break
@@ -118,40 +127,55 @@ for epoch in range(1, max_epoch+1):
     if (epoch % disp_freq) == 0:
             print("Epoch: %5d | SSE: %5.5e " % (epoch, SSE))
             plt.clf()
+
+            plt.plot(SSE_vec)
+            plt.ylabel('SSE')
+            plt.yscale('linear')
+            plt.title('epoch')
+            plt.grid(True)
             
-            plt.plot(SSE_vec) 
-            plt.ylabel('SSE') 
-            plt.yscale('linear') 
-            plt.title('epoch') 
-            plt.grid(True) 
+            
+             
 
             X1, X2 = np.meshgrid(x1, x2)
             E = np.reshape(e, X1.shape)
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
+            
+            ax = figa.add_subplot(111, projection='3d')
             ax.plot_surface(X1, X2, E, cmap='viridis')
             ax.set_xlabel('x1')
             ax.set_ylabel('x2')
             ax.set_zlabel('e')
+            
+            #Odrysowanie wykresu
 
             X1, X2 = np.meshgrid(x1, x2)
             Y3 = np.reshape(y3, X1.shape)
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
-            ax.plot_surface(X1, X2, Y3, cmap='viridis')
-            ax.set_xlabel('x1')
-            ax.set_ylabel('x2')
-            ax.set_zlabel('y3')
+            plt.pause(0.001)
+            plt.draw_all()
+            
+            
+            bx = figb.add_subplot(111, projection='3d')
+            bx.plot_surface(X1, X2, Y3, cmap='viridis')
+            bx.set_xlabel('x1')
+            bx.set_ylabel('x2')
+            bx.set_zlabel('y3')
+             # Odrysowanie wykresu
 
             X1, X2 = np.meshgrid(x1, x2)
             Y_T = np.reshape(y_t, X1.shape)
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
-            ax.plot_surface(X1, X2, Y_T, cmap='viridis')
-            ax.set_xlabel('x1')
-            ax.set_ylabel('x2')
-            ax.set_zlabel('y_t')
-            plt.show()
+           
+            
+            cx = figc.add_subplot(111, projection='3d')
+            cx.plot_surface(X1, X2, Y_T, cmap='viridis')
+            cx.set_xlabel('x1')
+            cx.set_ylabel('x2')
+            cx.set_zlabel('y_t')
+              # Pauza, aby wykres się odświeżył
+            
+            plt.pause(0.1)
+            plt.draw_all()
+            
+          
             
    
 
@@ -160,38 +184,5 @@ print("Epoch: %5d | SSE: %5.5e " % (epoch, SSE))
 hkl.dump([SSE_vec], 'SSE2w_adapt.hkl')
             
             
-# plt.plot(SSE_vec) 
-# plt.ylabel('SSE') 
-# plt.yscale('linear') 
-# plt.title('epoch') 
-# plt.grid(True) 
-
-# X1, X2 = np.meshgrid(x1, x2)
-# E = np.reshape(e, X1.shape)
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# ax.plot_surface(X1, X2, E, cmap='viridis')
-# ax.set_xlabel('x1')
-# ax.set_ylabel('x2')
-# ax.set_zlabel('e')
-
-# X1, X2 = np.meshgrid(x1, x2)
-# Y3 = np.reshape(y3, X1.shape)
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# ax.plot_surface(X1, X2, Y3, cmap='viridis')
-# ax.set_xlabel('x1')
-# ax.set_ylabel('x2')
-# ax.set_zlabel('y3')
-
-# X1, X2 = np.meshgrid(x1, x2)
-# Y_T = np.reshape(y_t, X1.shape)
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# ax.plot_surface(X1, X2, Y_T, cmap='viridis')
-# ax.set_xlabel('x1')
-# ax.set_ylabel('x2')
-# ax.set_zlabel('y_t')
-# plt.show()
 
 
