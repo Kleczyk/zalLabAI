@@ -33,24 +33,23 @@ for i in range(0,len(x1)):
 print(x.shape)
 print(y_t.shape)
 
-       
-x , y_t,
-max_epoch = 100
-err_goal = 1e-3 
+
+
+x 
+y_t
+max_epoch =  1000
+err_goal = 1e-10 
 disp_freq = 1000 
-lr = 0.01 
+lr = 0.001 
 mc = 0.9
 ksi_inc = 1.05
 ksi_dec = 0.7
 er = 1.04
-L = x.shape[0] 
-K1 = 50
-K2 = 40
+L = 2
+K1 = 30
+K2 = 29
 K3 = 1
 SSE_vec = [] 
-e_vec= []
-y3_vec=[]
-
 w1, b1 = net.nwtan(K1, L)  
 w2, b2 = net.nwtan(K2, K1)  
 w3, b3 = net.rands(K3, K2)
@@ -68,8 +67,7 @@ for epoch in range(1, max_epoch+1):
     
     
     SSE_t_1 = SSE
-    SSE = net.sumsqr(e)
-     
+    SSE = net.sumsqr(e) 
     if np.isnan(SSE): 
         break
     else:
@@ -104,13 +102,12 @@ for epoch in range(1, max_epoch+1):
     SSE = net.sumsqr(e) 
     if np.isnan(SSE): 
         break
-    # SSE_vec.append(SSE)
-    # e_vec.append(e)
-    # y3_vec.append(y3)
+    SSE_vec.append(SSE)
     
-
     if SSE < err_goal: 
         break 
+    
+        
 print("Epoch: %5d | SSE: %5.5e " % (epoch, SSE))
 hkl.dump([SSE_vec], 'SSE2w_adapt.hkl')
             
@@ -121,46 +118,47 @@ plt.title('epoch')
 plt.grid(True) 
 plt.show()
 
+X1, X2 = np.meshgrid(x1, x2)
+E = np.reshape(e, X1.shape)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X1, X2, E, cmap='viridis')
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.set_zlabel('e')
+plt.show()
 
 
 
+X1, X2 = np.meshgrid(x1, x2)
+Y3 = np.reshape(y3, X1.shape)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X1, X2, Y3, cmap='viridis')
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.set_zlabel('y3')
+plt.show()
 
 
-# for i in range(n_points):
-#     for j in range(n_points):
-#         CC_sym.input['AA'] = x[i, j]
-#         CC_sym.input['BB'] = y[i, j]
-#         CC_sym.compute()
-#         z[i, j] = CC_sym.output['CC']
 
-# fig = plt.figure(figsize=(8, 8))
-# ax = fig.add_subplot(111, projection='3d')
-# surf = ax.plot_surface(x, y, z, cmap='viridis')
-# ax.set_xlabel('AA')
-# ax.set_ylabel('BB')
-# ax.set_zlabel('CC')
-# ax.view_init(30, 200)
-# print("Najmniejsza możliwa otrzymana wartość CC: ",z.min())
-# print("Największa możliwa otrzymana wartość CC: ",z.max())
-# plt.show()
+X1, X2 = np.meshgrid(x1, x2)
+Y_T = np.reshape(y_t, X1.shape)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X1, X2, Y_T, cmap='viridis')
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.set_zlabel('y_t')
+plt.show()
 
+
+# X1, X2 = np.meshgrid(x1, x2)
+# plt_SEE = np.reshape(SSE, X1.shape)
 # fig = plt.figure()
 # ax = fig.add_subplot(111, projection='3d')
-
-# ax.plot_surface(X1, X2, y_true, cmap='viridis')
-
-# ax.set_xlabel('X1')
-# ax.set_ylabel('X2')
-# ax.set_zlabel('Y')
-
+# ax.plot_surface(X1, X2, plt_SEE, cmap='viridis')
+# ax.set_xlabel('x1')
+# ax.set_ylabel('x2')
+# ax.set_zlabel('SEE')
 # plt.show()
-
-# xx1= np.array([1,2,3,4,5])
-# xx2= np.array([1,2,3,4,5])
-
-# x = np.column_stack((xx1, xx2))
-
-# print(x)
-# pass
-
-
