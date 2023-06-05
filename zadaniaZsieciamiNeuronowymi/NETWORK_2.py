@@ -16,38 +16,39 @@ def y_value(x1, x2):
 # x2 = np.linspace(-1, 1, 10)
 # X1, X2 = np.meshgrid(x1, x2)
 
-x1 = np.arange(-1, 1, 0.1)
-x2 = np.arange(-1, 1, 0.1)
+x1 = np.arange(-1, 1, 0.01)
+x2 = np.arange(-1, 1, 0.01)
+print(x1)
 
 x = np.zeros([2, len(x1) * len(x2)])
 y_t = np.zeros([1,len(x1)* len(x2)])
 
 k=0
-print(len(x1))
+# print(len(x1))
 for i in range(0,len(x1)):
     for j in range(0,len(x2)):
         x[0,k]= x1[i]
         x[1,k]= x2[j]
         y_t[0,k]= y_value(x1[i], x2[j])
         k+=1
-print(x.shape)
-print(y_t.shape)
+# print(x.shape)
+# print(y_t.shape)
 
 
 
 x 
 y_t
-max_epoch =  1000
+max_epoch =  10000
 err_goal = 1e-10 
 disp_freq = 1000 
-lr = 0.001 
-mc = 0.9
+lr = 0.0001 
+mc = 0.95
 ksi_inc = 1.05
 ksi_dec = 0.7
 er = 1.04
 L = 2
-K1 = 30
-K2 = 29
+K1 = 40
+K2 = 25
 K3 = 1
 SSE_vec = [] 
 w1, b1 = net.nwtan(K1, L)  
@@ -116,7 +117,7 @@ plt.ylabel('SSE')
 plt.yscale('linear') 
 plt.title('epoch') 
 plt.grid(True) 
-plt.show()
+
 
 X1, X2 = np.meshgrid(x1, x2)
 E = np.reshape(e, X1.shape)
@@ -126,7 +127,7 @@ ax.plot_surface(X1, X2, E, cmap='viridis')
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_zlabel('e')
-plt.show()
+
 
 
 
@@ -138,7 +139,7 @@ ax.plot_surface(X1, X2, Y3, cmap='viridis')
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_zlabel('y3')
-plt.show()
+
 
 
 
